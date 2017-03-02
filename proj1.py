@@ -53,33 +53,35 @@ class Stack:
  
 def bfs(data, n):
 	start = time.time()
-	frontier = Queue((data, ""))
-	explored = []
+	frontier = Queue(data)
+	explored = set()
 	maxFringeSize = 0
-	state = ()
 	
 	print(data)
+	#while not frontier.isEmpty():
+	#	if maxFringeSize < frontier.size(): maxFringeSize = frontier.size()
+	#	state = frontier.dequeue()
+	#	explored.add(state)
+	#	#print frontier.items
+	#	#print explored
+	#	if state[0] == '012345678': break
+
+	#	#print state	
+	#	#raw_input("key")
+	#	for neighbor in getNeighbors(state,n):
+	#		if neighbor not in set(frontier.items).union(explored):
+				#frontier.enqueue(neighbor)
 	while not frontier.isEmpty():
 		if maxFringeSize < frontier.size(): maxFringeSize = frontier.size()
 		state = frontier.dequeue()
-		explored.append(state[0])
+		explored.add(state)
 		#print frontier.items
-		#print explored
-		if state[0] == '012345678': break
-		#elif state[0] == 'fail': continue
-
-
-		#print state	
-		#raw_input("key")
-		moves = ['Up', 'Down', 'Left', 'Right']	
-		for move in moves:
-			nextState = getNeighbor(state[0], move)
-			if not nextState == 'none' and frontier.search(nextState) == 0 and explored.count(nextState) == 0:
-				#print nextState
-				#print explored
-				#print frontier.items
-				frontier.enqueue((nextState, state[1] + "," + move))
+		if state == '012345678':
+			break
 		
+		for neighbor in reversed(getNeighbors(state,n)):
+			if neighbor not in set(frontier.items).union(explored):
+				frontier.enqueue(neighbor)
 
 
 	#print(explored)
@@ -103,7 +105,7 @@ def bfs(data, n):
 def dfs(data, n):
 	start = time.time()
 	frontier = Stack(data)
-	explored = []
+	explored = set()
 	maxFringeSize = 0
 	#state = ()
 	
@@ -111,13 +113,13 @@ def dfs(data, n):
 	while not frontier.isEmpty():
 		if maxFringeSize < frontier.size(): maxFringeSize = frontier.size()
 		state = frontier.pop()
-		explored.append(state)
+		explored.add(state)
 		#print frontier.items
 		if state == '012345678':
 			break
 		
 		for neighbor in getNeighbors(state,n):
-			if not frontier.search(neighbor) and explored.count(neighbor) == 0:
+			if neighbor not in set(frontier.items).union(explored):
 				frontier.push(neighbor)
 
 	#print(explored)

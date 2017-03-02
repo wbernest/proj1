@@ -14,7 +14,7 @@
     <RootNamespace>proj1</RootNamespace>
     <IsWindowsApplication>False</IsWindowsApplication>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>dfs 1,2,5,3,4,0,6,7,8</CommandLineArguments>
+    <CommandLineArguments>bfs 1,2,5,3,4,0,6,7,8</CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

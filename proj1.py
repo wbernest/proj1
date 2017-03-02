@@ -107,39 +107,49 @@ def dfs(data, n):
 	start = time.time()
 	frontier = Stack(data)
 	explored = set()
-	maxFringeSize = 0
 	frontierSet = set()
 	frontierSet.add(data)
-	
-	#print(data)
+	parents = {}
+	parents[data] = ('None', 'None')
+	maxFringeSize = 0
+	state = ''
+	lastFringeValue = ''
 	while not frontier.isEmpty():
 		if maxFringeSize < frontier.size(): maxFringeSize = frontier.size()
 		state = frontier.pop()
 		frontierSet.remove(state)
 		explored.add(state)
-		#print frontier.items
 		if state == '012345678':
 			break
 		
 		for neighbor in getNeighbors(state,n):
-			if neighbor not in frontierSet.union(explored):
-				frontier.push(neighbor)
-				frontierSet.add(neighbor)
+			if neighbor[0] not in frontierSet.union(explored):
+				frontier.push(neighbor[0])
+				frontierSet.add(neighbor[0])
+				parents[neighbor[0]] = (state, neighbor[1])
+				lastFringeValue = neighbor[0]
 
+	path = [state]
+	words = [parents[state][1]]
+	while not path[len(path) - 1] == data:
+		path.append(parents[path[len(path) - 1]][0])
+		words.append(parents[path[len(path) - 1]][1])
 
-	#print(explored)
-	#print movesMade
+	path = [lastFringeValue]
+	while not path[len(path) - 1] == data:
+		path.append(parents[path[len(path) - 1]][0])
+	words.remove('None')
+	words.reverse()
 	out = {
-		'pathToGoal': state[1][1::].split(','),
-		'costOfPath': len(state[1][1::].split(',')),
-		'nodesExpanded': len(explored)-1,
+		'pathToGoal': words,
+		'costOfPath': len(words),
+		'nodesExpanded': len(explored)- 1,
 		'fringeSize': frontier.size(),
 		'maxFringeSize': maxFringeSize,
-		'searchDepth': len(state[1][1::].split(',')),
-		'maxSearchDepth': len(state[1][1::].split(',')),
+		'searchDepth': len(words),
+		'maxSearchDepth': len(path) - 1,
 		'runningTime': 0
     }
-	#print out
 	end = time.time()
 	out['runningTime'] = end - start
 	output(out)
@@ -192,55 +202,7 @@ def output(data):
     print("running_time: " + "{:.8f}".format(data['runningTime']) + "\n")
     #outputFile.write("max_ram_usage: " + "{:.8f}".format(usage.ru_maxrss/1028) + "\n")
     return
-    
-def getNeighbor(state, move):
-	numList = state[::-1].split(",")
-	zeroX = 0
-	zeroY = 0
-	
-	board = []
-	for i in range(0, 3):
-		board.append([])
-		for j in range(0, 3):
-			board[i].append(numList.pop())
-			if board[i][j] == "0": 
-				zeroX = i
-				zeroY = j
-	
-	if move == 'Up':
-		if zeroX > 0:
-			board[zeroX][zeroY] = board[zeroX - 1][zeroY]
-			board[zeroX - 1][zeroY] = 0
-		else:
-			return 'none'
 
-	elif move == 'Down':
-		if zeroX < 2:
-			board[zeroX][zeroY] = board[zeroX + 1][zeroY]
-			board[zeroX + 1][zeroY] = 0
-		else:
-			return 'none'
-
-	elif move == 'Left':
-		if zeroY > 0:
-			board[zeroX][zeroY] = board[zeroX][zeroY - 1]
-			board[zeroX][zeroY - 1] = 0
-		else:
-			return 'none'
-	elif move == 'Right':
-		if zeroY < 2:
-			board[zeroX][zeroY] = board[zeroX][zeroY + 1]
-			board[zeroX][zeroY + 1] = 0
-		else:
-			return 'none'
-	
-	returnList = []
-	for i in range(0, 3):
-		for j in range(0, 3):
-			returnList.append(board[i][j])
-			
-	return ','.join(map(str,returnList))
-	
 def getNeighbors(state, n):
 	moves = ['Up', 'Down', 'Left', 'Right']
 	neighbors = []
